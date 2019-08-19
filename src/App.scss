@@ -1,0 +1,94 @@
+.ewp-{
+  &exporter-list__item{
+    border: 1px solid #e5e5e5;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    background: #fff;
+    color: #23282d;
+    margin-bottom: 10px;
+    padding: 10px;
+
+    h1, p{
+      margin: 0 0 10px;
+      padding: 0;
+    }
+  }
+
+  &form{
+
+    border: 1px solid #e5e5e5;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    background: #fff;
+    color: #23282d;
+    margin-bottom: 10px;
+    padding: 10px;
+
+    font-size: 16px;
+
+    &__row{
+      margin-bottom: 10px;
+    }
+
+    &__input{
+      width: 100%;
+      font-size: 1em;
+    }
+
+    &__label{
+      display: block;
+      margin-bottom: 0.5em;
+      font-weight: bold;
+    }
+  }
+
+  &header{
+    margin-bottom: 10px;
+  }
+
+  &notice{
+    background: #FFF;
+    border: 1px solid #e5e5e5;
+    color: #2B6CB0;
+    padding: 0;
+    margin-bottom: 10px;
+
+    p{
+      border-left: 4px solid #63B3ED;
+      margin: 0;
+      padding: 10px;
+    }
+
+    &--success{
+      p {
+        border-left-color: #68D391;
+        color: #2F855A;
+      }
+    }
+
+    &--error{
+      p {
+        border-left-color: #FC8181;
+        color: #C53030;
+      }
+    }
+  }
+
+  &page-title-action{
+    margin-left: 10px !important;
+  }
+
+  &nav-tab-right{
+    float:right;
+    margin-top: 15px;
+    margin-right: 10px;
+  }
+
+  &logo{
+    line-height: 50px;
+  }
+
+  &buttons{
+    .button{
+      margin-right: 5px;
+    }
+  }
+}
