@@ -15,7 +15,7 @@ export default class ExporterListItem extends React.Component {
                 <p>Export <strong>{type}</strong> to <strong>{file_type}</strong> file.</p>
                 <div className="ewp-buttons">
                 <Link to={AJAX_BASE+'&edit=' + id } className="button button-secondary button-small">Edit</Link>
-                <Link to={AJAX_BASE+'&run=' + id } className="button button-primary button-small">Run</Link>
+                <a onClick={() => { this.props.onRun(this.props.exporter); }} className="button button-primary button-small">Export</a>
                 </div>
             </div>
         );
@@ -24,4 +24,5 @@ export default class ExporterListItem extends React.Component {
 
 ExporterListItem.propTypes = {
     exporter: PropTypes.object.isRequired,
+    onRun: PropTypes.func.isRequired
 };

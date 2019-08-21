@@ -1,9 +1,9 @@
 import React from 'react';
 import ExporterListItem from '../components/ExporterListItem';
-import {Link} from 'react-router-dom';
 import Errors from '../components/Errors';
 import Header from '../components/Header';
-import Loading from "../components/Loading";
+import Loading from '../components/Loading';
+import PropTypes from "prop-types";
 
 const AJAX_BASE = window.wpApiSettings.wprb_ajax_base;
 
@@ -15,7 +15,9 @@ export default class ExporterArchivePage extends React.Component {
         this.state = {
             loaded: false,
             exporters: [],
-            errors: []
+            errors: [],
+            exporter: { id: null, name: '', type: '', fields: [], file_type: ''},
+            openModal: false
         };
 
         this.xhr = null;
@@ -67,24 +69,30 @@ export default class ExporterArchivePage extends React.Component {
     render() {
 
         return (
-            <div className="ewp-exporter-archive">
+            <React.Fragment>
+                <div className="ewp-exporter-archive">
 
-                <Header active="exporters"/>
+                    <Header active="exporters"/>
 
-                <hr className="wp-header-end"/>
+                    <hr className="wp-header-end"/>
 
-                <Errors section="archive" errors={this.state.errors}/>
-                <Loading loading={!this.state.loaded} />
+                    <Errors section="archive" errors={this.state.errors}/>
+                    <Loading loading={!this.state.loaded} />
 
-                <div className="ewp-exporter-list">
-                    {this.state.exporters.length === 0 && this.state.loaded &&
-                    <p>No Exporters Found</p>
-                    }
-                    {this.state.exporters.map(exporter => (
-                        <ExporterListItem key={exporter.id} exporter={exporter}/>
-                    ))}
+                    <div className="ewp-exporter-list">
+                        {this.state.exporters.length === 0 && this.state.loaded &&
+                        <p>No Exporters Found</p>
+                        }
+                        {this.state.exporters.map(exporter => (
+                            <ExporterListItem key={exporter.id} exporter={exporter} onRun={this.props.onRun}/>
+                        ))}
+                    </div>
                 </div>
-            </div>
+            </React.Fragment>
         );
     }
 }
+
+ExporterArchivePage.propTypes = {
+    onRun: PropTypes.func.isRequired
+};

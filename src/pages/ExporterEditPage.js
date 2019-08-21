@@ -13,8 +13,8 @@ export default class ExporterEditPage extends React.Component {
         this.state = {
             loaded: true,
             saved: true,
+            errors: [],
             exporter: { id: null, name: '', type: '', fields: [], file_type: ''},
-            errors: []
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -111,24 +111,27 @@ export default class ExporterEditPage extends React.Component {
 
     render() {
         return (
-            <div className="ewp-exporter-edit">
+            <React.Fragment>
+                <div className="ewp-exporter-edit">
 
-                <Header active="exporters"/>
-                <hr className="wp-header-end" />
+                    <Header active="exporters"/>
+                    <hr className="wp-header-end" />
 
-                <Errors section="archive" errors={this.state.errors}/>
-                <Loading loading={!this.state.loaded}/>
-                <Loading loading={!this.state.saved} type="success" message="Saving"/>
+                    <Errors section="archive" errors={this.state.errors}/>
+                    <Loading loading={!this.state.loaded}/>
+                    <Loading loading={!this.state.saved} type="success" message="Saving"/>
 
-                {this.state.loaded &&
-                    <ExporterForm onFormSubmit={this.handleSubmit} onInputChanged={this.handleChange}
-                              exporter={this.state.exporter}/>
-                }
-            </div>
+                    {this.state.loaded &&
+                        <ExporterForm onFormSubmit={this.handleSubmit} onInputChanged={this.handleChange}
+                                  exporter={this.state.exporter} onRun={this.props.onRun}/>
+                    }
+                </div>
+            </React.Fragment>
         );
     }
 }
 
 ExporterEditPage.propTypes = {
     id: PropTypes.number,
+    onRun: PropTypes.func.isRequired
 };

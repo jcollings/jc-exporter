@@ -113,118 +113,31 @@ class EWP_Exporter {
 
 	public function export(){
 
-		$query = new WP_Query(array(
-			'post_type' => 'post',
-			'posts_per_page' => -1
-		));
-
 		$previous_time = microtime(true);
 
-		$fh = tmpfile();
-
-		$path = WP_CONTENT_DIR . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR .'exportwp' . DIRECTORY_SEPARATOR;
-		if(!file_exists($path)){
-			mkdir($path);
+		if($this->getFileType() === 'csv'){
+			$file = new EWP_File_CSV($this);
+		}else{
+			$file = new EWP_File_XML($this);
 		}
 
-		$file_path = $path . $this->getId() . '.csv';
+		$file->start();
 
-		$fh = fopen($file_path, 'w');
-
+		$mapper = new EWP_Mapper_Post($this->getType());
 		$columns = $this->getFields();
 
-		// write headers
-		fputcsv($fh, $columns);
-
-		if($query->have_posts()){
+		if($mapper->have_records()){
 
 			$i = 0;
-			$total = $query->found_posts;
+			$total = $mapper->found_records();
 
 			echo json_encode(array('progress' => 0, 'count' => $i, 'total' => $total));
 			flush();
 			ob_flush();
 
-			for($i = 0; $i < count($query->posts); $i++){
-				$post = $query->posts[$i];
+			for($i = 0; $i < $total; $i++){
 
-				// Meta data
-				$meta = get_post_meta($post->ID);
-
-				// Author Details
-				$author = $post->post_author;
-				$user_data = get_userdata($author);
-
-				$row = array();
-				foreach($columns as $column){
-					$output = '';
-
-					$matches = null;
-					if(preg_match('/^ewp_tax_(.*?)$/', $column, $matches) == 1) {
-
-						$taxonomy    = $matches[1];
-						$found_terms = array();
-						$terms       = wp_get_object_terms( $post->ID, $taxonomy );
-						if ( ! empty( $terms ) ) {
-							foreach ( $terms as $term ) {
-
-								/**
-								 * @var WP_Term $term
-								 */
-								$found_terms[] = $term->name;
-							}
-						}
-
-						$output = implode( '|', $found_terms );
-					}elseif(preg_match('/^ewp_cf_(.*?)$/', $column, $matches) == 1){
-
-						$meta_key = $matches[1];
-						if(isset($meta[$meta_key])){
-							$output = implode('|', $meta[$meta_key]);
-						}
-
-					}else{
-						switch($column){
-							case 'ID':
-								$output = $post->ID;
-								break;
-							case 'post_name':
-								$output = $post->post_title;
-								break;
-							case 'post_content':
-								$output = $post->post_content;
-								break;
-							case 'post_excerpt':
-								$output = $post->post_excerpt;
-								break;
-							case 'post_author':
-								$output = $user_data->nickname;
-								break;
-							case 'post_thumbnail':
-								if(has_post_thumbnail($post)){
-									$output = wp_get_attachment_url(get_post_thumbnail_id($post));
-								}
-								break;
-							case 'post_date':
-								$output = $post->post_date;
-								break;
-							case 'post_status':
-								$output = $post->post_status;
-								break;
-							case 'post_modified':
-								$output = $post->post_modified;
-								break;
-							case 'post_parent':
-								$output = $post->post_parent;
-								break;
-						}
-					}
-
-
-					$row[] = $output;
-				}
-
-				fputcsv($fh, $row);
+				$file->add($mapper->get_record($i, $columns));
 
 				$current_time = microtime(true);
 				$delta_time = $current_time - $previous_time;
@@ -242,10 +155,17 @@ class EWP_Exporter {
 			}
 		}
 
-		fclose($fh);
+		$file->end();
+
+		$key = md5(time());
+		add_post_meta($this->id, '_ewp_file_' . $key, array(
+			'url' => $file->get_file_url(),
+			'path' => $file->get_file_path(),
+			'type' => $this->getFileType()
+		));
 
 		return array(
-			'file' => content_url('/uploads/exportwp/' . $this->getId() . '.csv')
+			'file' => $key
 		);
 	}
 

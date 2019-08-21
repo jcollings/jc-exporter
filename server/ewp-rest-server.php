@@ -2,6 +2,12 @@
 
 require_once __DIR__ . '/ewp-exporter.php';
 
+require_once __DIR__ . '/ewp-file.php';
+require_once __DIR__ . '/ewp-file-csv.php';
+require_once __DIR__ . '/ewp-file-xml.php';
+
+require_once __DIR__ . '/ewp-mapper-post.php';
+
 class EWP_Rest_Server extends WP_REST_Controller {
 
 	public $namespace = 'wpe/';
@@ -50,12 +56,20 @@ class EWP_Rest_Server extends WP_REST_Controller {
 				'permission_callback' => array( $this, 'get_permission' )
 			),
 		) );
+
+		register_rest_route( $namespace, '/exporter/(?P<id>\d+)/download/(?P<file>\S+)', array(
+			array(
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => array( $this, 'download' ),
+//				'permission_callback' => array( $this, 'get_permission' )
+			),
+		) );
 	}
 
 	public function get_permission() {
 
 		if ( ! current_user_can( 'manage_options' ) ) {
-			return new WP_Error( 'rest_forbidden', esc_html__( 'You do not have permissions to view exporters.', 'wp-react-boilerplate' ), array( 'status' => 401 ) );
+			return new WP_Error( 'rest_forbidden', esc_html__( 'You do not have permissions to view exporters.', 'exportwp' ), array( 'status' => 401 ) );
 		}
 
 		return true;
@@ -109,5 +123,23 @@ class EWP_Rest_Server extends WP_REST_Controller {
 		$id       = intval( $request->get_param( 'id' ) );
 		$exporter = new EWP_Exporter( $id );
 		return $exporter->export();
+	}
+
+	public function download( WP_REST_Request $request){
+		$id = intval($request->get_param( 'id' ));
+		$file = $request->get_param( 'file' );
+
+		$download_data = get_post_meta($id, '_ewp_file_' . $file, true);
+		if($download_data){
+
+			delete_post_meta($id, '_ewp_file_' . $file, $download_data);
+
+			header('Content-disposition: attachment; filename="'.basename($download_data['path']).'"');
+			header('Content-type: "text/'.$download_data['type'].'"; charset="utf8"');
+			readfile($download_data['path']);
+			die();
+		}
+
+		return new WP_Error('rest_forbidden', esc_html__( 'You do not have permissions to view exporters.', 'exportwp' ), array( 'status' => 401 ) );
 	}
 }

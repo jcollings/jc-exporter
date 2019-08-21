@@ -71,13 +71,30 @@ class JC_Exporter_Plugin {
 			'nonce' => wp_create_nonce( 'wp_rest' ),
 			'admin_base' => '/wp-admin/tools.php?page=' . $this->plugin_domain,
 			'wprb_ajax_base' => rest_url('/wpe/v1'),
-			'wprb_basic_auth' => defined( 'WPRB_AJAX_BASIC_AUTH' ) ? WPRB_AJAX_BASIC_AUTH : null,
+			'fields' => $this->get_fields()
 		) );
 
 		wp_enqueue_script( $this->plugin_domain . '-bundle' );
 		wp_add_inline_script( $this->plugin_domain . '-bundle', '', 'before' );
 
 		wp_enqueue_style( $this->plugin_domain . '-bundle-styles', plugin_dir_url( __FILE__ ) . 'dist/style.bundle.css', array(), $this->version, 'all' );
+	}
+
+	private function get_fields(){
+
+		$fields = array();
+
+		$post_types = get_post_types();
+		foreach($post_types as $post_type => $label){
+			$mapper = new EWP_Mapper_Post($post_type);
+			$fields[] = array(
+				'id' => $post_type,
+				'label' => $label,
+				'fields' => $mapper->get_fields()
+			);
+		}
+
+		return $fields;
 	}
 }
 

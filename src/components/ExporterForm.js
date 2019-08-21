@@ -1,10 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Link} from 'react-router-dom';
-import {exporter} from '../services/exporter.service';
 import Loading from './Loading';
 
-const AJAX_BASE  = window.wpApiSettings.admin_base;
+const EXPORTER_FIELDS = window.wpApiSettings.fields;
 
 export default class ExporterForm extends React.Component {
 
@@ -27,27 +25,7 @@ export default class ExporterForm extends React.Component {
         event.preventDefault();
 
         this.props.onFormSubmit().then(() => {
-            this.setState({ran: false});
-            const observable = exporter.run(this.props.exporter.id);
-            observable.subscribe(
-                response => {
-
-                    if (response.hasOwnProperty('file')){
-                        window.location.href = response.file;
-                        this.setState({ran: true});
-                    } else {
-                        console.log('progress', response);
-                        this.setState({ranProgress: response.progress.toFixed() + '%'});
-                    }
-                },
-                error => {
-                    console.log('error', error);
-                },
-                () => {
-                    console.log('complete');
-                    this.setState({ran: true});
-                }
-            );
+            this.props.onRun(this.props.exporter);
         });
     }
 
@@ -58,13 +36,7 @@ export default class ExporterForm extends React.Component {
 
     render() {
 
-        const post_fields = ['ID', 'post_name', 'post_excerpt', 'post_content', 'post_thumbnail', 'post_author', 'ewp_tax_post_tag', 'ewp_tax_category', 'ewp_cf__thumbnail_id'];
-
-        const typeOptions = [
-            {id: 'user', label: 'Users', fields: ['ID', 'user_login', 'user_pass']},
-            {id: 'post', label: 'Posts', fields: post_fields},
-            {id: 'page', label: 'Pages', fields: post_fields},
-        ];
+        const typeOptions = EXPORTER_FIELDS;
 
         const fileTypes = [
             {id: 'csv', label: 'CSV file'},
@@ -102,7 +74,7 @@ export default class ExporterForm extends React.Component {
                             <div className="ewp-form__row">
                                 <label className="ewp-form__label">Fields to export:</label>
                                 <select className="ewp-form__input" name="fields" multiple="multiple"
-                                        onChange={this.props.onInputChanged} value={fields}>
+                                        onChange={this.props.onInputChanged} value={fields} style={{height: '200px'}}>
                                     {typeOptions.find(option => option.id === type).fields.map(option => (
                                         <option key={option} value={option}>{option}</option>
                                     ))}
@@ -123,10 +95,8 @@ export default class ExporterForm extends React.Component {
                         <div className="form__row">
                             <div className="ewp-buttons">
                             <button className="button button-primary" type="submit">Save</button>
-                                <button type="button" className="button button-secondary" onClick={this.run}>Test Run</button>
                                 {this.props.exporter.id > 0 &&
-                                <Link to={AJAX_BASE + '&run=' + this.props.exporter.id}
-                                      className="button button-secondary">Run</Link>
+                                <button type="button" className="button button-secondary" onClick={this.run}>Save & Export</button>
                                 }
                             </div>
                         </div>
@@ -149,5 +119,6 @@ ExporterForm.defaultProps = {
 ExporterForm.propTypes = {
     onFormSubmit: PropTypes.func.isRequired,
     onInputChanged: PropTypes.func.isRequired,
+    onRun: PropTypes.func.isRequired,
     exporter: PropTypes.object
 };
