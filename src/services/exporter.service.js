@@ -1,6 +1,6 @@
 import {Observable} from 'rxjs';
 
-const AJAX_BASE = window.wpApiSettings.wprb_ajax_base;
+const AJAX_BASE = window.wpApiSettings.ewp_ajax_base;
 
 export const exporter = {
     run,

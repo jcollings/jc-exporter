@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {exporter} from '../services/exporter.service';
 
-const AJAX_BASE = window.wpApiSettings.wprb_ajax_base;
+const AJAX_BASE = window.wpApiSettings.ewp_ajax_base;
 
 export default class ExportModal extends React.Component {
 

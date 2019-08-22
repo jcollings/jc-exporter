@@ -5,7 +5,7 @@ import Header from '../components/Header';
 import Loading from '../components/Loading';
 import PropTypes from "prop-types";
 
-const AJAX_BASE = window.wpApiSettings.wprb_ajax_base;
+const AJAX_BASE = window.wpApiSettings.ewp_ajax_base;
 
 export default class ExporterArchivePage extends React.Component {
 

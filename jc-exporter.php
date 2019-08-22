@@ -28,7 +28,8 @@ class JC_Exporter_Plugin {
 		$ewp_rest_server->init();
 
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
-		add_action( 'init', array( $this, 'admin_init'));
+		add_action( 'init', array( $this, 'admin_init' ) );
+		add_action( 'tool_box', array( $this, 'tool_box' ) );
 	}
 
 	public function admin_init(){
@@ -63,6 +64,10 @@ class JC_Exporter_Plugin {
 		$this->load_view( 'admin.php' );
 	}
 
+	public function tool_box(){
+		$this->load_view('tools-card.php');
+	}
+
 	public function load_assets() {
 		wp_register_script( $this->plugin_domain . '-bundle', plugin_dir_url( __FILE__ ) . 'dist/bundle.js', array(), $this->version, 'all' );
 
@@ -70,7 +75,7 @@ class JC_Exporter_Plugin {
 			'root' => esc_url_raw( rest_url() ),
 			'nonce' => wp_create_nonce( 'wp_rest' ),
 			'admin_base' => '/wp-admin/tools.php?page=' . $this->plugin_domain,
-			'wprb_ajax_base' => rest_url('/wpe/v1'),
+			'ewp_ajax_base' => rest_url('/ewp/v1'),
 			'fields' => $this->get_fields()
 		) );
 

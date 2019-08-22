@@ -5,12 +5,13 @@ require_once __DIR__ . '/ewp-exporter.php';
 require_once __DIR__ . '/ewp-file.php';
 require_once __DIR__ . '/ewp-file-csv.php';
 require_once __DIR__ . '/ewp-file-xml.php';
+require_once __DIR__ . '/ewp-file-json.php';
 
 require_once __DIR__ . '/ewp-mapper-post.php';
 
 class EWP_Rest_Server extends WP_REST_Controller {
 
-	public $namespace = 'wpe/';
+	public $namespace = 'ewp/';
 	public $version = 'v1';
 
 	public function init() {

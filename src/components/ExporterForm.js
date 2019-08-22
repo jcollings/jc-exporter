@@ -40,7 +40,8 @@ export default class ExporterForm extends React.Component {
 
         const fileTypes = [
             {id: 'csv', label: 'CSV file'},
-            {id: 'xml', label: 'XML file'}
+            {id: 'xml', label: 'XML file'},
+            {id: 'json', label: 'JSON file'}
         ];
 
         const {name, type, fields, file_type} = this.props.exporter;

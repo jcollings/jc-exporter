@@ -117,8 +117,10 @@ class EWP_Exporter {
 
 		if($this->getFileType() === 'csv'){
 			$file = new EWP_File_CSV($this);
-		}else{
+		}elseif($this->getFileType() === 'xml'){
 			$file = new EWP_File_XML($this);
+		}else{
+			$file = new EWP_File_JSON($this);
 		}
 
 		$file->start();
