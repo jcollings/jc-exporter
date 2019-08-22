@@ -171,6 +171,12 @@ class EWP_Exporter {
 		);
 	}
 
+	public function delete(){
+		if ( get_post_type( $this->getId() ) === JCE_POST_TYPE ) {
+			wp_delete_post( $this->getId(), true );
+		}
+	}
+
 	/**
 	 * @return int
 	 */

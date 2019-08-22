@@ -4,6 +4,7 @@ import Errors from '../components/Errors';
 import Header from '../components/Header';
 import Loading from '../components/Loading';
 import PropTypes from "prop-types";
+import {exporter} from "../services/exporter.service";
 
 const AJAX_BASE = window.wpApiSettings.ewp_ajax_base;
 
@@ -22,6 +23,7 @@ export default class ExporterArchivePage extends React.Component {
 
         this.xhr = null;
         this.getExporters = this.getExporters.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
     }
 
 
@@ -56,6 +58,14 @@ export default class ExporterArchivePage extends React.Component {
         });
     }
 
+    handleDelete(data){
+        this.setState({loaded: false});
+        this.setState({exporters: this.state.exporters.filter(item => item.id !== data.id)});
+        exporter.remove(data.id).finally(() => {
+            this.getExporters();
+        });
+    }
+
     componentDidMount() {
         this.getExporters();
     }
@@ -84,7 +94,7 @@ export default class ExporterArchivePage extends React.Component {
                         <p>No Exporters Found</p>
                         }
                         {this.state.exporters.map(exporter => (
-                            <ExporterListItem key={exporter.id} exporter={exporter} onRun={this.props.onRun}/>
+                            <ExporterListItem key={exporter.id} exporter={exporter} onRun={this.props.onRun} onDelete={this.handleDelete}/>
                         ))}
                     </div>
                 </div>

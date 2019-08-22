@@ -48,6 +48,11 @@ class EWP_Rest_Server extends WP_REST_Controller {
 				'callback'            => array( $this, 'save_exporter' ),
 				'permission_callback' => array( $this, 'get_permission' )
 			),
+			array(
+				'methods'             => WP_REST_Server::DELETABLE,
+				'callback'            => array( $this, 'delete_exporter' ),
+				'permission_callback' => array( $this, 'get_permission' )
+			),
 		) );
 
 		register_rest_route( $namespace, '/exporter/(?P<id>\d+)/run', array(
@@ -142,5 +147,11 @@ class EWP_Rest_Server extends WP_REST_Controller {
 		}
 
 		return new WP_Error('rest_forbidden', esc_html__( 'You do not have permissions to view exporters.', 'exportwp' ), array( 'status' => 401 ) );
+	}
+
+	public function delete_exporter( WP_REST_Request $request ){
+		$id = intval($request->get_param( 'id' ));
+		$exporter = new EWP_Exporter( $id );
+		$exporter->delete();
 	}
 }

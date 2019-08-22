@@ -7,7 +7,8 @@ export const exporter = {
     run,
     get,
     save,
-    abort
+    abort,
+    remove
 };
 
 function abort(){
@@ -86,6 +87,24 @@ function save(data) {
             dataType: 'json',
             method: 'POST',
             data: data,
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('X-WP-Nonce', window.wpApiSettings.nonce);
+            },
+            success: resolve,
+            error: function(data) {
+                reject(data.responseJSON.message);
+            }
+        });
+    });
+}
+
+function remove(id){
+    return new Promise((resolve, reject) => {
+        const url = AJAX_BASE + '/exporter/' + id;
+        xhr = window.jQuery.ajax({
+            url: url,
+            dataType: 'json',
+            method: 'DELETE',
             beforeSend: function(xhr) {
                 xhr.setRequestHeader('X-WP-Nonce', window.wpApiSettings.nonce);
             },
