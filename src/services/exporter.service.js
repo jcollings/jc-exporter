@@ -1,20 +1,30 @@
 import {Observable} from 'rxjs';
 
 const AJAX_BASE = window.wpApiSettings.ewp_ajax_base;
+let xhr = null;
 
 export const exporter = {
     run,
     get,
-    save
+    save,
+    abort
 };
 
+function abort(){
+    if(xhr !== null){
+        xhr.abort();
+    }
+}
+
 function run(id) {
+
+    abort();
+
     return new Observable(subscriber => {
 
         let jsonResponse = '', lastResponseLen = false;
-        const $ = window.jQuery;
 
-        $.ajax({
+        xhr = window.jQuery.ajax({
             url: AJAX_BASE + '/exporter/' + id + '/run',
             dataType: 'json',
             method: 'GET',
@@ -44,8 +54,11 @@ function run(id) {
 }
 
 function get(id) {
+
+    abort();
+
     return new Promise((resolve, reject) => {
-        window.jQuery.ajax({
+        xhr = window.jQuery.ajax({
             url: AJAX_BASE + '/exporter/' + id,
             dataType: 'json',
             method: 'GET',
@@ -63,9 +76,12 @@ function get(id) {
 }
 
 function save(data) {
+
+    abort();
+
     return new Promise((resolve, reject) => {
         const url = data.id > 0 ? AJAX_BASE + '/exporter/' + data.id : AJAX_BASE + '/exporter';
-        window.jQuery.ajax({
+        xhr = window.jQuery.ajax({
             url: url,
             dataType: 'json',
             method: 'POST',

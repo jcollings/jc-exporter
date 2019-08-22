@@ -55,6 +55,7 @@ export default class ExportModal extends React.Component {
     }
 
     close(){
+        exporter.abort();
         this.setState({exporter: { id: null, name: '', type: '', fields: [], file_type: ''}});
     }
 
