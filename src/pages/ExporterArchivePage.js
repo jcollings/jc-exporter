@@ -6,7 +6,7 @@ import Loading from '../components/Loading';
 import PropTypes from "prop-types";
 import {exporter} from "../services/exporter.service";
 
-const AJAX_BASE = window.wpApiSettings.ewp_ajax_base;
+const AJAX_BASE = window.wpApiSettings.ajax_base;
 
 export default class ExporterArchivePage extends React.Component {
 

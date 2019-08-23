@@ -1,6 +1,6 @@
 import {Observable} from 'rxjs';
 
-const AJAX_BASE = window.wpApiSettings.ewp_ajax_base;
+const AJAX_BASE = window.wpApiSettings.ajax_base;
 let xhr = null;
 
 export const exporter = {
@@ -43,8 +43,32 @@ function run(id) {
                         lastResponseLen = response.length;
                     }
 
-                    jsonResponse = JSON.parse(thisResponse);
-                    subscriber.next(jsonResponse);
+                    const parts = thisResponse.split("\n");
+                    if(parts.length > 0) {
+                        parts.map(part => {
+                            if(part.length > 0) {
+                                console.log('part', part);
+                                subscriber.next(JSON.parse(part.replace("\n","")));
+                            }
+                        });
+                    }else{
+                        jsonResponse = JSON.parse(thisResponse.replace("\n",""));
+                        subscriber.next(jsonResponse);
+                    }
+
+
+
+
+                    // const response = e.currentTarget.response;
+                    // const parts = response.split("\n");
+                    // console.log(parts, response);
+                    // if(parts.length > 0) {
+                    //     parts.map(part => {
+                    //         if(part.length > 0) {
+                    //             subscriber.next(JSON.parse(part));
+                    //         }
+                    //     });
+                    // }
                 }
             },
             complete: function() {

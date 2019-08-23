@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {exporter} from '../services/exporter.service';
 
-const AJAX_BASE = window.wpApiSettings.ewp_ajax_base;
+const AJAX_BASE = window.wpApiSettings.ajax_base;
 
 export default class ExportModal extends React.Component {
 
@@ -31,7 +31,6 @@ export default class ExportModal extends React.Component {
         const observable = exporter.run(currentExporter.id);
         observable.subscribe(
             response => {
-
                 if (response.hasOwnProperty('file')){
                     window.location.href = AJAX_BASE + '/exporter/' + currentExporter.id + '/download/' + response.file;
                     this.setState({
@@ -46,6 +45,7 @@ export default class ExportModal extends React.Component {
                 console.log('error', error);
             },
             () => {
+                console.log('complete');
                 this.setState({
                     ran: true,
                     progress: 100

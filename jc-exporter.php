@@ -74,8 +74,8 @@ class JC_Exporter_Plugin {
 		wp_localize_script( $this->plugin_domain . '-bundle', 'wpApiSettings', array(
 			'root' => esc_url_raw( rest_url() ),
 			'nonce' => wp_create_nonce( 'wp_rest' ),
-			'admin_base' => '/wp-admin/tools.php?page=' . $this->plugin_domain,
-			'ewp_ajax_base' => rest_url('/ewp/v1'),
+			'admin_base' => str_replace( site_url(), '', admin_url('/tools.php?page=' . $this->plugin_domain)),
+			'ajax_base' => rest_url('/ewp/v1'),
 			'fields' => $this->get_fields()
 		) );
 
