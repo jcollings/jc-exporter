@@ -1,7 +1,7 @@
 import {Observable} from 'rxjs';
 
 const AJAX_BASE = window.wpApiSettings.ajax_base;
-let xhr = null;
+let current_xhr = null;
 
 export const exporter = {
     run,
@@ -12,8 +12,8 @@ export const exporter = {
 };
 
 function abort(){
-    if(xhr !== null){
-        xhr.abort();
+    if (current_xhr !== null){
+        current_xhr.abort();
     }
 }
 
@@ -25,7 +25,7 @@ function run(id) {
 
         let jsonResponse = '', lastResponseLen = false;
 
-        xhr = window.jQuery.ajax({
+        current_xhr = window.jQuery.ajax({
             url: AJAX_BASE + '/exporter/' + id + '/run',
             dataType: 'json',
             method: 'GET',
@@ -43,32 +43,17 @@ function run(id) {
                         lastResponseLen = response.length;
                     }
 
-                    const parts = thisResponse.split("\n");
-                    if(parts.length > 0) {
+                    const parts = thisResponse.split('\n');
+                    if (parts.length > 0) {
                         parts.map(part => {
-                            if(part.length > 0) {
-                                console.log('part', part);
-                                subscriber.next(JSON.parse(part.replace("\n","")));
+                            if (part.length > 0) {
+                                subscriber.next(JSON.parse(part.replace('\n','')));
                             }
                         });
-                    }else{
-                        jsonResponse = JSON.parse(thisResponse.replace("\n",""));
+                    } else {
+                        jsonResponse = JSON.parse(thisResponse.replace('\n',''));
                         subscriber.next(jsonResponse);
                     }
-
-
-
-
-                    // const response = e.currentTarget.response;
-                    // const parts = response.split("\n");
-                    // console.log(parts, response);
-                    // if(parts.length > 0) {
-                    //     parts.map(part => {
-                    //         if(part.length > 0) {
-                    //             subscriber.next(JSON.parse(part));
-                    //         }
-                    //     });
-                    // }
                 }
             },
             complete: function() {
@@ -83,7 +68,7 @@ function get(id) {
     abort();
 
     return new Promise((resolve, reject) => {
-        xhr = window.jQuery.ajax({
+        current_xhr = window.jQuery.ajax({
             url: AJAX_BASE + '/exporter/' + id,
             dataType: 'json',
             method: 'GET',
@@ -106,7 +91,7 @@ function save(data) {
 
     return new Promise((resolve, reject) => {
         const url = data.id > 0 ? AJAX_BASE + '/exporter/' + data.id : AJAX_BASE + '/exporter';
-        xhr = window.jQuery.ajax({
+        current_xhr = window.jQuery.ajax({
             url: url,
             dataType: 'json',
             method: 'POST',
@@ -125,7 +110,7 @@ function save(data) {
 function remove(id){
     return new Promise((resolve, reject) => {
         const url = AJAX_BASE + '/exporter/' + id;
-        xhr = window.jQuery.ajax({
+        current_xhr = window.jQuery.ajax({
             url: url,
             dataType: 'json',
             method: 'DELETE',

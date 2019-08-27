@@ -114,6 +114,7 @@ class EWP_Exporter {
 	public function export(){
 
         header('Content-Type: text/event-stream');
+		header("Content-Encoding: none");
         header('Cache-Control: no-cache');
 
 		$previous_time = microtime(true);
@@ -147,7 +148,7 @@ class EWP_Exporter {
 				$current_time = microtime(true);
 				$delta_time = $current_time - $previous_time;
 
-				if($delta_time > 1) {
+				if($delta_time > 0.1) {
 					echo json_encode( array(
 						'progress' => round( ( $i / $total ) * 100 , 2),
 						'count'    => $i,

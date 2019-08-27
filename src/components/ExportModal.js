@@ -45,7 +45,6 @@ export default class ExportModal extends React.Component {
                 console.log('error', error);
             },
             () => {
-                console.log('complete');
                 this.setState({
                     ran: true,
                     progress: 100
