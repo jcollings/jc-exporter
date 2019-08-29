@@ -71,10 +71,14 @@ class JC_Exporter_Plugin {
 	public function load_assets() {
 		wp_register_script( $this->plugin_domain . '-bundle', plugin_dir_url( __FILE__ ) . 'dist/bundle.js', array(), $this->version, 'all' );
 
+		$matches = false;
+        preg_match('/^https?:\/\/[^\/]+(.*?)$/', admin_url('/tools.php?page=' . $this->plugin_domain), $matches);
+		$ajax_base = $matches[1];
+
 		wp_localize_script( $this->plugin_domain . '-bundle', 'wpApiSettings', array(
 			'root' => esc_url_raw( rest_url() ),
 			'nonce' => wp_create_nonce( 'wp_rest' ),
-			'admin_base' => str_replace( site_url(), '', admin_url('/tools.php?page=' . $this->plugin_domain)),
+			'admin_base' => $ajax_base,
 			'ajax_base' => rest_url('/ewp/v1'),
 			'fields' => $this->get_fields()
 		) );

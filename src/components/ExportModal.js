@@ -66,7 +66,7 @@ export default class ExportModal extends React.Component {
                 <div className="ewp-modal-wrapper">
                     <div className="ewp-modal-inside">
                         <span className="ewp-modal-close" onClick={this.close}>x</span>
-                        <h1 className="ewp-modal__title">Exporter Progress ({this.state.progress}%)</h1>
+                        <h2 className="ewp-modal__title">Exporter Progress ({this.state.progress}%)</h2>
                         <p>Exporting <strong>{type}</strong> to <strong>{file_type}</strong> file.</p>
                         <progress className="ewp-progress-bar" max={100} value={this.state.progress}/>
                     </div>
