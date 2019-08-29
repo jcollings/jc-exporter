@@ -10,6 +10,7 @@ class EWP_Mapper_Post{
 	public function get_core_fields(){
 		return array(
 			'ID',
+			'post_author',
 			'post_date',
 			'post_date_gmt',
 			'post_content',
@@ -46,6 +47,14 @@ class EWP_Mapper_Post{
 		if(post_type_supports($this->post_type, 'thumbnail')){
 			$custom_fields[] = 'post_thumbnail';
 		}
+
+		// post author
+		$custom_fields[] = 'ewp_author_nicename';
+		$custom_fields[] = 'ewp_author_nickname';
+		$custom_fields[] = 'ewp_author_first_name';
+		$custom_fields[] = 'ewp_author_last_name';
+		$custom_fields[] = 'ewp_author_login';
+		$custom_fields[] = 'ewp_author_desc';
 
 		// post_meta
 		$meta_fields = $wpdb->get_col($wpdb->prepare("SELECT DISTINCT meta_key FROM ".$wpdb->postmeta." WHERE post_id IN (SELECT DISTINCT ID FROM ".$wpdb->posts." WHERE post_type='%s')", [$this->post_type]));
@@ -173,6 +182,24 @@ class EWP_Mapper_Post{
 							if(has_post_thumbnail($post)){
 								$output = wp_get_attachment_url(get_post_thumbnail_id($post));
 							}
+							break;
+						case 'ewp_author_nicename':
+							$output = $user_data->user_nicename;
+							break;
+						case 'ewp_author_nickname':
+							$output = $user_data->nickname;
+							break;
+						case 'ewp_author_first_name':
+							$output = $user_data->first_name;
+							break;
+						case 'ewp_author_last_name':
+							$output = $user_data->last_name;
+							break;
+						case 'ewp_author_login':
+							$output = $user_data->user_login;
+							break;
+						case 'ewp_author_desc':
+							$output = $user_data->description;
 							break;
 					}
 				}
