@@ -68,6 +68,9 @@ const webpackConfig = {
 
 if ( process.env.NODE_ENV === 'production' ) {
 	const buildFolder = path.resolve( __dirname, 'build' );
+
+	webpackConfig.plugins.push( new webpack.DefinePlugin({ 'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV) }));
+
 	webpackConfig.plugins.push( new webpack.optimize.UglifyJsPlugin( {
 		'mangle': {
 			'screw_ie8': true
