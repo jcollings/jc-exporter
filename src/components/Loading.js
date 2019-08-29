@@ -1,24 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export default class Loading extends React.Component {
-    render() {
-
-        const {loading, type, message} = this.props;
-
-        return (
-            <React.Fragment>
-                {loading &&
-                    <div className="ewp-notices">
-                        <div className={'ewp-notice ewp-notice--' + type}>
-                            <p>{message}</p>
-                        </div>
-                    </div>
-                }
-            </React.Fragment>
-        );
-    }
-}
+const Loading = ({loading, type, message}) => (
+    <React.Fragment>
+        {loading &&
+        <div className="ewp-notices">
+            <div className={'ewp-notice ewp-notice--' + type}>
+                <p>{message}</p>
+            </div>
+        </div>
+        }
+    </React.Fragment>
+);
 
 Loading.defaultProps = {
     type: 'info',
@@ -30,3 +23,5 @@ Loading.propTypes = {
     type: PropTypes.string,
     message: PropTypes.string
 };
+
+export default Loading;
