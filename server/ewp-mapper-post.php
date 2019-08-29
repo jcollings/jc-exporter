@@ -1,5 +1,5 @@
 <?php
-class EWP_Mapper_Post{
+class EWP_Mapper_Post implements EWP_Mapper_Interface {
 
 	private $post_type;
 
@@ -84,7 +84,7 @@ class EWP_Mapper_Post{
 			'posts_per_page' => -1
 		));
 
-		return $this->query->post_count > 0;
+		return $this->found_records() > 0;
 	}
 
 	public function found_records(){

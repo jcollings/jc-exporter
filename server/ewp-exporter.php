@@ -129,7 +129,12 @@ class EWP_Exporter {
 
 		$file->start();
 
-		$mapper = new EWP_Mapper_Post($this->getType());
+		if($this->getType() === 'user'){
+			$mapper = new EWP_Mapper_User();
+		}else{
+			$mapper = new EWP_Mapper_Post($this->getType());
+		}
+
 		$columns = $this->getFields();
 
 		if($mapper->have_records()){

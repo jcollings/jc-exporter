@@ -103,6 +103,13 @@ class JC_Exporter_Plugin {
 			);
 		}
 
+		$mapper = new EWP_Mapper_User();
+		$fields[] = array(
+			'id' => 'user',
+			'label' => 'User',
+			'fields' => $mapper->get_fields()
+		);
+
 		return $fields;
 	}
 }
