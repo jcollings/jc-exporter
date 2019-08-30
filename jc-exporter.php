@@ -98,7 +98,7 @@ class JC_Exporter_Plugin {
 			$mapper = new EWP_Mapper_Post($post_type);
 			$fields[] = array(
 				'id' => $post_type,
-				'label' => $label,
+				'label' => 'Post Type: ' . $label,
 				'fields' => $mapper->get_fields()
 			);
 		}
@@ -106,9 +106,19 @@ class JC_Exporter_Plugin {
 		$mapper = new EWP_Mapper_User();
 		$fields[] = array(
 			'id' => 'user',
-			'label' => 'User',
+			'label' => 'Users',
 			'fields' => $mapper->get_fields()
 		);
+
+		$taxonomies = get_taxonomies(array(), 'objects');
+		foreach($taxonomies as $taxonomy){
+			$mapper = new EWP_Mapper_Tax($taxonomy->name);
+			$fields[] = array(
+				'id' => 'ewp_tax_' . $taxonomy->name,
+				'label' => 'Taxonomy: ' . $taxonomy->labels->name,
+				'fields' => $mapper->get_fields()
+			);
+		}
 
 		return $fields;
 	}

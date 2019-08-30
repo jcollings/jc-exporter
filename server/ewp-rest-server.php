@@ -10,6 +10,7 @@ require_once __DIR__ . '/ewp-file-json.php';
 require_once __DIR__ . '/ewp-mapper-interface.php';
 require_once __DIR__ . '/ewp-mapper-post.php';
 require_once __DIR__ . '/ewp-mapper-user.php';
+require_once __DIR__ . '/ewp-mapper-tax.php';
 
 class EWP_Rest_Server extends WP_REST_Controller {
 
