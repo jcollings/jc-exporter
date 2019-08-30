@@ -1,11 +1,75 @@
+.tools_page_jc-exporter{
+  #wpcontent{
+    padding-left: 0;
+  }
+  .wrap{
+    margin: 0;
+  }
+}
+
 .ewp-{
+
+  &header{
+    background: #FFF;
+    border-bottom: 1px solid #e2e4e7;
+    text-align: center;
+
+    h1{
+      display: inline-block;
+      font-weight: 600;
+      margin: 1rem .8rem;
+      font-size: 23px;
+      padding: 9px 0 4px 0;
+      line-height: 1.3;
+    }
+  }
+
+  &header__tabs{
+
+  }
+
+  &header__tab{
+    display: inline-block;
+    text-decoration: none;
+    color: inherit;
+    padding: .5rem 1rem 1rem;
+    margin: 0 1rem;
+    transition: box-shadow .5s ease-in-out;
+
+    &:focus{
+      color: #191e23;
+      outline: 1px solid #6c7781;
+      box-shadow: none;
+    }
+
+    &:hover{
+      color: #608b60;
+    }
+
+    &--active {
+      font-weight: 600;
+      &, &:focus {
+        box-shadow: inset 0 -3px #608b60;
+      }
+    }
+  }
+
+  &body{
+    padding: 10px;
+    width: 100%;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+  }
+
   &exporter-list__item{
     border: 1px solid #e5e5e5;
     box-shadow: 0 1px 1px rgba(0,0,0,.04);
     background: #fff;
     color: #23282d;
     margin-bottom: 10px;
-    padding: 10px;
+    padding: 1em 3.5em 1em 1.5em;
 
     h1, p{
       margin: 0 0 10px;
@@ -20,9 +84,7 @@
     background: #fff;
     color: #23282d;
     margin-bottom: 10px;
-    padding: 10px;
-
-    font-size: 16px;
+    padding: 1em 3.5em 1em 1.5em;
 
     &__row{
       margin-bottom: 10px;

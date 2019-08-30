@@ -86,16 +86,19 @@ export default class ExporterArchivePage extends React.Component {
 
                     <hr className="wp-header-end"/>
 
-                    <Errors section="archive" errors={this.state.errors}/>
-                    <Loading loading={!this.state.loaded} />
+                    <div className="ewp-body">
 
-                    <div className="ewp-exporter-list">
-                        {this.state.exporters.length === 0 && this.state.loaded &&
-                        <p>No Exporters Found</p>
-                        }
-                        {this.state.exporters.map(exporter => (
-                            <ExporterListItem key={exporter.id} exporter={exporter} onRun={this.props.onRun} onDelete={this.handleDelete}/>
-                        ))}
+                        <Errors section="archive" errors={this.state.errors}/>
+                        <Loading loading={!this.state.loaded} />
+
+                        <div className="ewp-exporter-list">
+                            {this.state.exporters.length === 0 && this.state.loaded &&
+                            <p>No Exporters Found</p>
+                            }
+                            {this.state.exporters.map(exporter => (
+                                <ExporterListItem key={exporter.id} exporter={exporter} onRun={this.props.onRun} onDelete={this.handleDelete}/>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </React.Fragment>

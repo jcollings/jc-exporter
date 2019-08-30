@@ -11,16 +11,14 @@ export default class Header extends React.Component {
 
         return (
             <div className="ewp-header">
-                <h1 className="nav-tab-wrapper">
-                    <span className="wp-heading-inline ewp-logo">ExportWP</span>
-                    <Link to={ADMIN_BASE + '&edit'}  className="page-title-action ewp-page-title-action">Add
-                        New</Link>
-
-                    <span className="ewp-nav-tab-right">
-                        <Link to={ADMIN_BASE}  className={'nav-tab' + (active === 'exporters' ? ' nav-tab-active' : '')}>Exporters</Link>
-                        {/* <Link to={ADMIN_BASE+'&tab=settings'} className={'nav-tab' + (active === 'settings' ? ' nav-tab-active' : '')}>Settings</Link> */}
-                    </span>
+                <h1>
+                    ExportWP
                 </h1>
+
+                <div className="ewp-header__tabs">
+                    <Link to={ADMIN_BASE + '&edit'} className={'ewp-header__tab' + (active === 'new' ? ' ewp-header__tab--active' : '') }>Add New</Link>
+                    <Link to={ADMIN_BASE} className={'ewp-header__tab' + (active === 'exporters' ? ' ewp-header__tab--active' : '') }>Exporters</Link>
+                </div>
             </div>
         );
     }

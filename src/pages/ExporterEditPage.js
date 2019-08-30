@@ -5,8 +5,11 @@ import Header from '../components/Header';
 import Errors from '../components/Errors';
 import Loading from '../components/Loading';
 import {exporter} from '../services/exporter.service';
+import {withRouter} from 'react-router';
 
-export default class ExporterEditPage extends React.Component {
+const AJAX_BASE  = window.wpApiSettings.admin_base;
+
+class ExporterEditPage extends React.Component {
 
     constructor(props){
         super(props);
@@ -15,6 +18,7 @@ export default class ExporterEditPage extends React.Component {
             saved: true,
             errors: [],
             exporter: { id: null, name: '', type: '', fields: [], file_type: ''},
+            active: 'exporters'
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -46,6 +50,12 @@ export default class ExporterEditPage extends React.Component {
             this.setState({saved: false});
 
             exporter.save(this.state.exporter).then(data => {
+
+                if (this.state.exporter.id === null){
+                    // eslint-disable-next-line react/prop-types
+                    this.props.history.push(AJAX_BASE + '&edit=' + data.id);
+                }
+
                 this.setState({exporter: data});
                 resolve();
             }).catch(error => {
@@ -93,6 +103,8 @@ export default class ExporterEditPage extends React.Component {
 
         if (this.props.id > 0){
             this.getExporter(this.props.id);
+        } else {
+            this.setState({active: 'new'});
         }
     }
 
@@ -103,19 +115,24 @@ export default class ExporterEditPage extends React.Component {
         if (id !== prevId){
             if (id > 0){
                 this.getExporter(id);
+                this.setState({active: 'exporters'});
             } else {
                 this.setState({exporter: { id: null, name: '', type: '', fields: []}});
+                this.setState({active: 'new'});
             }
         }
     }
 
     render() {
+
         return (
             <React.Fragment>
                 <div className="ewp-exporter-edit">
 
-                    <Header active="exporters"/>
+                    <Header active={this.state.active}/>
                     <hr className="wp-header-end" />
+
+                    <div className="ewp-body">
 
                     <Errors section="archive" errors={this.state.errors}/>
                     <Loading loading={!this.state.loaded}/>
@@ -125,6 +142,7 @@ export default class ExporterEditPage extends React.Component {
                         <ExporterForm onFormSubmit={this.handleSubmit} onInputChanged={this.handleChange}
                                   exporter={this.state.exporter} onRun={this.props.onRun}/>
                     }
+                    </div>
                 </div>
             </React.Fragment>
         );
@@ -135,3 +153,5 @@ ExporterEditPage.propTypes = {
     id: PropTypes.number,
     onRun: PropTypes.func.isRequired
 };
+
+export default withRouter(ExporterEditPage);
