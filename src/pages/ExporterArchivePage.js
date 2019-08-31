@@ -3,10 +3,8 @@ import ExporterListItem from '../components/ExporterListItem';
 import Errors from '../components/Errors';
 import Header from '../components/Header';
 import Loading from '../components/Loading';
-import PropTypes from "prop-types";
-import {exporter} from "../services/exporter.service";
-
-const AJAX_BASE = window.wpApiSettings.ajax_base;
+import PropTypes from 'prop-types';
+import {exporter} from '../services/exporter.service';
 
 export default class ExporterArchivePage extends React.Component {
 
@@ -18,44 +16,55 @@ export default class ExporterArchivePage extends React.Component {
             exporters: [],
             errors: [],
             exporter: { id: null, name: '', type: '', fields: [], file_type: ''},
-            openModal: false
+            openModal: false,
+            status: []
         };
 
-        this.xhr = null;
+        this.exportersXHR = null;
+        this.statusXHR = null;
+
+
         this.getExporters = this.getExporters.bind(this);
+        this.getStatus = this.getStatus.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
     }
 
 
     getExporters() {
-        this.xhr = window.jQuery.ajax({
-            url: AJAX_BASE + '/exporters',
-            dataType: 'json',
-            method: 'GET',
-            beforeSend: function(xhr) {
-                this.setState({loaded: false});
-                xhr.setRequestHeader('X-WP-Nonce', window.wpApiSettings.nonce);
-            }.bind(this),
-            success: function(data) {
-                this.setState({exporters: data});
-            }.bind(this),
-            error: function(data) {
 
-                if (data.statusText === 'abort'){
-                    return;
-                }
+        this.exportersXHR = exporter.exporters();
 
-                this.setState({
-                    errors: [...this.state.errors, {
-                        section: 'archive',
-                        message: data.responseJSON.message
-                    }]
-                });
-            }.bind(this),
-            complete: function() {
-                this.setState({loaded: true});
-            }.bind(this)
+        this.exportersXHR.request.then( data => {
+
+            this.setState({
+                exporters: data,
+                loaded: true
+            });
+        }).catch( data => {
+
+            if (data.statusText === 'abort'){
+                return;
+            }
+
+            this.setState({
+                errors: [...this.state.errors, {
+                    section: 'archive',
+                    message: data.responseJSON.message
+                }],
+                loaded: true
+            });
+
         });
+    }
+
+    getStatus(){
+        this.statusXHR = exporter.status();
+        this.statusXHR.request.subscribe(
+            response => {
+                console.log(response);
+                this.setState({status: response});
+            }
+        );
     }
 
     handleDelete(data){
@@ -68,12 +77,12 @@ export default class ExporterArchivePage extends React.Component {
 
     componentDidMount() {
         this.getExporters();
+        this.getStatus();
     }
 
     componentWillUnmount() {
-        if (this.xhr !== null) {
-            this.xhr.abort();
-        }
+        this.exportersXHR.abort();
+        this.statusXHR.abort();
     }
 
     render() {
@@ -96,7 +105,7 @@ export default class ExporterArchivePage extends React.Component {
                             <p>No Exporters Found</p>
                             }
                             {this.state.exporters.map(exporter => (
-                                <ExporterListItem key={exporter.id} exporter={exporter} onRun={this.props.onRun} onDelete={this.handleDelete}/>
+                                <ExporterListItem key={exporter.id} exporter={exporter} status={this.state.status.find( item => item.id === exporter.id)} onRun={this.props.onRun} onDelete={this.handleDelete}/>
                             ))}
                         </div>
                     </div>

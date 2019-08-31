@@ -9,6 +9,23 @@ export default class ExporterListItem extends React.Component {
 
         const {id, name, type, file_type} = this.props.exporter;
 
+        let status_text = 'Loading';
+
+        if(this.props.status){
+            switch(this.props.status.status){
+                case 'complete':
+                    status_text = 'Last ran on: ' + this.props.status.date;
+                    break;
+                case 'running':
+                    status_text = 'Running: ' + this.props.status.progress + '%';
+                    break;
+                case 'created':
+                default:
+                    status_text = 'Last updated: ' + this.props.status.date;
+                    break;
+            }
+        }
+
         return (
             <div className="ewp-exporter-list__item">
                 <div className="ewp-item">
@@ -25,7 +42,7 @@ export default class ExporterListItem extends React.Component {
                     </div>
                 </div>
                 <div className="ewp-item__progress">
-                    <p>Last Exported on 31/08/2019</p>
+                    <p>{status_text}</p>
                 </div>
             </div>
         );

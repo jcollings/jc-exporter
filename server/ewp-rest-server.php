@@ -41,6 +41,14 @@ class EWP_Rest_Server extends WP_REST_Controller {
 			),
 		) );
 
+		register_rest_route( $namespace, '/status', array(
+			array(
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => array( $this, 'get_status' ),
+				'permission_callback' => array( $this, 'get_permission' )
+			),
+		) );
+
 		register_rest_route( $namespace, '/exporter/(?P<id>\d+)', array(
 			array(
 				'methods'             => WP_REST_Server::READABLE,
@@ -157,5 +165,55 @@ class EWP_Rest_Server extends WP_REST_Controller {
 		$id = intval($request->get_param( 'id' ));
 		$exporter = new EWP_Exporter( $id );
 		$exporter->delete();
+	}
+
+	public function get_status( WP_REST_Request $request ){
+
+		header('Content-Type: text/event-stream');
+		header("Content-Encoding: none");
+		header('Cache-Control: no-cache');
+
+		$default_time = 5;
+		$exporting_time = 1;
+
+		$startedAt = time();
+		do {
+
+			$update_time = $default_time;
+
+			if ((time() - $startedAt) > 10) {
+				die();
+			}
+
+			$result = array();
+			$query  = new WP_Query( array(
+				'post_type'      => JCE_POST_TYPE,
+				'posts_per_page' => - 1,
+				'fields' => 'ids'
+			) );
+
+			if(!empty($query->posts)) {
+				foreach ( $query->posts as $post_id ) {
+
+					$exporter = new EWP_Exporter($post_id);
+					$status = $exporter->get_status();
+					$status['id'] = $post_id;
+
+					if($status['status'] === 'running'){
+						$update_time = $exporting_time;
+					}
+
+					$result[] = $status;
+				}
+			}
+
+			echo json_encode($result) . "\n";
+			ob_flush();
+			flush();
+
+			sleep($update_time);
+
+		} while(true);
+
 	}
 }

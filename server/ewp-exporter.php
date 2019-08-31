@@ -151,7 +151,8 @@ class EWP_Exporter {
 			$i = 0;
 			$total = $mapper->found_records();
 
-			echo json_encode(array('progress' => 0, 'count' => $i, 'total' => $total)) ."\n";
+			echo json_encode($this->set_status('running', $i, $total)) ."\n";
+
 			flush();
 			ob_flush();
 
@@ -163,11 +164,7 @@ class EWP_Exporter {
 				$delta_time = $current_time - $previous_time;
 
 				if($delta_time > 0.1) {
-					echo json_encode( array(
-						'progress' => round( ( $i / $total ) * 100 , 2),
-						'count'    => $i,
-						'total'    => $total
-					) ) ."\n";
+					echo json_encode( $this->set_status('running', $i, $total) ) ."\n";
 					flush();
 					ob_flush();
 					$previous_time = $current_time;
@@ -184,16 +181,30 @@ class EWP_Exporter {
 			'type' => $this->getFileType()
 		));
 
-		echo json_encode(array(
-            'progress' => 100,
-            'count'    => $total,
-            'total'    => $total,
-			'file' => $key
-		));
+		$status = $this->set_status('complete', $i, $total);
+		$status['file'] = $key;
+		echo json_encode($status) . "\n";
 
         flush();
         ob_flush();
 		die();
+	}
+
+	public function get_status(){
+		$status = get_post_meta($this->getId(), '_ewp_status', true);
+		if(!$status){
+			$status = $this->set_status('created');
+		}
+		return $status;
+	}
+
+	private function set_status($status, $counter = 0, $total = 0){
+
+		$progress = $total > 0 ? round( ( $counter / $total ) * 100 , 2) : 0;
+		$data = array('status' => $status, 'date' => date('Y-m-d H:i:s'), 'progress' => $progress, 'count' => $counter, 'total' => $total);
+		update_post_meta($this->getId(), '_ewp_status', $data);
+
+		return $data;
 	}
 
 	public function delete(){
