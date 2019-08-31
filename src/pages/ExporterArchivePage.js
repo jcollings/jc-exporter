@@ -61,7 +61,6 @@ export default class ExporterArchivePage extends React.Component {
         this.statusXHR = exporter.status();
         this.statusXHR.request.subscribe(
             response => {
-                console.log(response);
                 this.setState({status: response});
             }
         );
