@@ -134,6 +134,9 @@ class EWP_Exporter {
 		if(preg_match('/^ewp_tax_(.*?)$/', $type, $matches) == 1) {
 			$taxonomy = $matches[1];
 			$mapper = new EWP_Mapper_Tax($taxonomy);
+		}elseif(preg_match('/^ewp_comment_(.*?)$/', $type, $matches) == 1) {
+			$post_type = $matches[1];
+			$mapper = new EWP_Mapper_Comment($post_type);
 		}elseif($type === 'user'){
 			$mapper = new EWP_Mapper_User();
 		}else{

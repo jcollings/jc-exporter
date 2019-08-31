@@ -11,6 +11,7 @@ require_once __DIR__ . '/ewp-mapper-interface.php';
 require_once __DIR__ . '/ewp-mapper-post.php';
 require_once __DIR__ . '/ewp-mapper-user.php';
 require_once __DIR__ . '/ewp-mapper-tax.php';
+require_once __DIR__ . '/ewp-mapper-comment.php';
 
 class EWP_Rest_Server extends WP_REST_Controller {
 

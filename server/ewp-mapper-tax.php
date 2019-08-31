@@ -26,12 +26,20 @@ class EWP_Mapper_Tax implements EWP_Mapper_Interface{
 		$core = $this->get_core_fields();
 		$custom_fields = array();
 
+		// get taxonomy custom fields
+		global $wpdb;
+		$meta_fields = $wpdb->get_col($wpdb->prepare("SELECT DISTINCT meta_key FROM ".$wpdb->termmeta." as tm INNER JOIN ".$wpdb->term_taxonomy." as tt ON tm.term_id = tt.term_id WHERE tt.taxonomy = %s", [$this->taxonomy]));
+		foreach($meta_fields as $field){
+			$custom_fields[] = 'ewp_cf_' . $field;
+		}
+
 		return array_merge($core, $custom_fields);
 	}
 
 	public function have_records() {
 		$this->query = new WP_Term_Query(array(
-			'taxonomy' => $this->taxonomy
+			'taxonomy' => $this->taxonomy,
+			'hide_empty' => false
 		));
 
 		return $this->found_records() > 0;

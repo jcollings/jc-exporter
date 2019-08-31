@@ -92,6 +92,7 @@ class JC_Exporter_Plugin {
 	private function get_fields(){
 
 		$fields = array();
+		$comments = array();
 
 		$post_types = get_post_types();
 		foreach($post_types as $post_type => $label){
@@ -101,7 +102,18 @@ class JC_Exporter_Plugin {
 				'label' => 'Post Type: ' . $label,
 				'fields' => $mapper->get_fields()
 			);
+
+			if(post_type_supports($post_type, 'comments')){
+				$mapper = new EWP_Mapper_Comment($post_type);
+				$comments[] = array(
+					'id' => 'ewp_comment_' . $post_type,
+					'label' => 'Comments: ' . $label,
+					'fields' => $mapper->get_fields()
+				);
+			}
 		}
+
+		$fields = array_merge($fields, $comments);
 
 		$mapper = new EWP_Mapper_User();
 		$fields[] = array(
