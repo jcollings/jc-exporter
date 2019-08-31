@@ -174,7 +174,7 @@ class EWP_Rest_Server extends WP_REST_Controller {
 		header('Cache-Control: no-cache');
 
 		$default_time = 5;
-		$exporting_time = 1;
+		$exporting_time = 0.1;
 
 		$startedAt = time();
 		do {

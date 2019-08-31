@@ -14,7 +14,7 @@ export default class ExporterListItem extends React.Component {
         if(this.props.status){
             switch(this.props.status.status){
                 case 'complete':
-                    status_text = 'Last ran on: ' + this.props.status.date;
+                    status_text = 'Completed Exporting '+this.props.status.total+' records on: ' + this.props.status.date;
                     break;
                 case 'running':
                     status_text = 'Running: ' + this.props.status.progress + '%';

@@ -191,6 +191,9 @@ class EWP_Exporter {
 	}
 
 	public function get_status(){
+		global $wpdb;
+
+		clean_post_cache($this->getId());
 		$status = get_post_meta($this->getId(), '_ewp_status', true);
 		if(!$status){
 			$status = $this->set_status('created');
