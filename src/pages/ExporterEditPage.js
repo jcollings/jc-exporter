@@ -130,7 +130,6 @@ class ExporterEditPage extends React.Component {
                 <div className="ewp-exporter-edit">
 
                     <Header active={this.state.active}/>
-                    <hr className="wp-header-end" />
 
                     <div className="ewp-body">
 

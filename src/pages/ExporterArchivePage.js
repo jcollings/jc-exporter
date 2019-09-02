@@ -92,8 +92,6 @@ export default class ExporterArchivePage extends React.Component {
 
                     <Header active="exporters"/>
 
-                    <hr className="wp-header-end"/>
-
                     <div className="ewp-body">
 
                         <Errors section="archive" errors={this.state.errors}/>
